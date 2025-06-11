@@ -1,0 +1,31 @@
+/* Custom Keyframe Animations for Pulsing Effects */
+
+@keyframes pulse-red {
+    0%, 100% { 
+        color: inherit; 
+    }
+    50% { 
+        color: #EF4444; /* red-500 */
+    }
+}
+
+.pulsing-red {
+    animation: pulse-red 0.6s ease-in-out infinite;
+}
+
+@keyframes pulse-hit-glow {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); 
+    }
+    50% { 
+        box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); 
+    }
+    100% { 
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); 
+    }
+}
+
+.pulsing-hit {
+  animation: pulse-hit-glow 0.6s infinite;
+}
+
