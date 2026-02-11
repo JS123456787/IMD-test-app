@@ -424,16 +424,16 @@ function IMDGeneratorPage() {
                     if (list.length >= numFreqs) break;
                     let isValid = true;
                     if (isCarrierSpacingEnabled) {
-                        for (const existingFreq of list) { if (Math.abs(candidateFreq - existingFreq) < cSpacing) { isValid = false; break; } }
+                        for (const existingFreq of list) { if (Math.abs(candidateFreq - existingFreq) < (cSpacing-0.0001)) { isValid = false; break; } }
                     }
                     if (!isValid) continue;
                     const tempList = [...list, candidateFreq];
                     const { imdProducts: tempImd } = calculateIMD(tempList);
                     for (const product of tempImd) {
                          for (const carrier of tempList) {
-                            if (is2T3OSpacingEnabled && product.type === '2-TX' && product.order === 3 && Math.abs(product.value - carrier) < s2t3o) { isValid = false; break; }
-                            if (is3T3OSpacingEnabled && product.type === '3-TX' && product.order === 3 && Math.abs(product.value - carrier) < s3t3o) { isValid = false; break; }
-                            if (is5TSpacingEnabled && product.order === 5 && Math.abs(product.value - carrier) < s5t) { isValid = false; break; }
+                            if (is2T3OSpacingEnabled && product.type === '2-TX' && product.order === 3 && Math.abs(product.value - carrier) < (s2t3o-0.0001)) { isValid = false; break; }
+                            if (is3T3OSpacingEnabled && product.type === '3-TX' && product.order === 3 && Math.abs(product.value - carrier) < (s3t3o-0.0001)) { isValid = false; break; }
+                            if (is5TSpacingEnabled && product.order === 5 && Math.abs(product.value - carrier) < (s5t-0.0001)) { isValid = false; break; }
                          }
                          if (!isValid) break;
                     }
