@@ -169,9 +169,9 @@ function IMDCalculatorPage() {
     const [isCarrierSpacingEnabled, setIsCarrierSpacingEnabled] = useState(true);
     const [spacing2T3O, setSpacing2T3O] = useState('0.075');
     const [is2T3OSpacingEnabled, setIs2T3OSpacingEnabled] = useState(true);
-    const [spacing3T3O, setSpacing3T3O] = useState('0.50');
+    const [spacing3T3O, setSpacing3T3O] = useState('0.050');
     const [is3T3OSpacingEnabled, setIs3T3OSpacingEnabled] = useState(false);
-    const [spacing5T, setSpacing5T] = useState('0.50');
+    const [spacing5T, setSpacing5T] = useState('0.050');
     const [is5TSpacingEnabled, setIs5TSpacingEnabled] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
     const [pulsingRules, setPulsingRules] = useState({});
@@ -186,7 +186,7 @@ function IMDCalculatorPage() {
 
     const handleClear = () => setFrequencies(Array(8).fill(''));
     const handleRestoreDefaults = () => {
-        setCarrierSpacing('0.350'); setSpacing2T3O('0.075'); setSpacing3T3O('0.50'); setSpacing5T('0.50');
+        setCarrierSpacing('0.350'); setSpacing2T3O('0.075'); setSpacing3T3O('0.050'); setSpacing5T('0.050');
         setIsCarrierSpacingEnabled(true); setIs2T3OSpacingEnabled(true); setIs3T3OSpacingEnabled(false); setIs5TSpacingEnabled(false);
     };
 
