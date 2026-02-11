@@ -213,7 +213,7 @@ function IMDCalculatorPage() {
         if (isCarrierSpacingEnabled && !isNaN(cSpacing)) {
             for (let i = 0; i < validFreqs.length; i++) {
                 for (let j = i + 1; j < validFreqs.length; j++) {
-                    if (Math.abs(validFreqs[i].freq - validFreqs[j].freq) < cSpacing) {
+                    if (Math.abs(validFreqs[i].freq - validFreqs[j].freq) < (cSpacing-0.0001)) {
                         const originalI = validFreqs[i].originalIndex;
                         const originalJ = validFreqs[j].originalIndex;
                         const pairKey = [originalI, originalJ].sort().join('-');
@@ -228,8 +228,8 @@ function IMDCalculatorPage() {
         const productHits = new Set();
         allImdProducts.forEach((p, productIndex) => {
              for(const f of validFreqs) {
-                 if (is2T3OSpacingEnabled && !isNaN(s2t3o) && p.type === '2-TX' && p.order === 3 && Math.abs(p.value - f.freq) < s2t3o) { productHits.add(productIndex); if(!alerts[f.originalIndex].includes('IMD Hit')) alerts[f.originalIndex].push('IMD Hit'); newPulsingRules.twoT3O = true; }
-                 if (is3T3OSpacingEnabled && !isNaN(s3t3o) && p.type === '3-TX' && p.order === 3 && Math.abs(p.value - f.freq) < s3t3o) { productHits.add(productIndex); if(!alerts[f.originalIndex].includes('IMD Hit')) alerts[f.originalIndex].push('IMD Hit'); newPulsingRules.threeT3O = true; }
+                 if (is2T3OSpacingEnabled && !isNaN(s2t3o) && p.type === '2-TX' && p.order === 3 && Math.abs(p.value - f.freq) < (s2t3o-0.0001)) { productHits.add(productIndex); if(!alerts[f.originalIndex].includes('IMD Hit')) alerts[f.originalIndex].push('IMD Hit'); newPulsingRules.twoT3O = true; }
+                 if (is3T3OSpacingEnabled && !isNaN(s3t3o) && p.type === '3-TX' && p.order === 3 && Math.abs(p.value - f.freq) < (s2t3o-0.0001)) { productHits.add(productIndex); if(!alerts[f.originalIndex].includes('IMD Hit')) alerts[f.originalIndex].push('IMD Hit'); newPulsingRules.threeT3O = true; }
                  if (is5TSpacingEnabled && !isNaN(s5t) && p.order === 5 && Math.abs(p.value - f.freq) < s5t) { productHits.add(productIndex); if(!alerts[f.originalIndex].includes('IMD Hit')) alerts[f.originalIndex].push('IMD Hit'); newPulsingRules.fiveT = true; }
              }
         });
