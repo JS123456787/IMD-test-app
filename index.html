@@ -279,7 +279,7 @@ function IMDCalculatorPage({
         let baseStyle = 'border-l-4 p-3 rounded-r-lg shadow-md transition-all duration-300 ';
         if (product.order === 3 && product.type === '2-TX') baseStyle += 'bg-red-800/50 border-red-600';
         else if (product.order === 3 && product.type === '3-TX') baseStyle += 'bg-orange-800/50 border-orange-400';
-        else if (product.order === 5) baseStyle += 'bg-yellow-800/50 border-yellow-400';
+        else if (product.order === 5) baseStyle += 'bg-yellow-800/50 border-[#ffff00]';
         else baseStyle += 'bg-zinc-700 border-zinc-500';
         if (violationData.productHits.has(index)) return baseStyle + ' animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]';
         return baseStyle;
@@ -302,10 +302,14 @@ function IMDCalculatorPage({
                                 React.createElement("div", { key: index },
                                     React.createElement("div", { className: "h-5 mb-1 flex items-end" },
                                         violationData.alerts[index].length > 0 ? (
-                                            React.createElement("div", { className: "flex items-center gap-1 text-red-400 text-xs font-bold" }, React.createElement(AlertTriangle, { size: 12 }), " ", violationData.alerts[index][0])
+                                            React.createElement("div", { className: "flex items-center gap-1 text-red-400 text-xs font-bold" }, 
+                                                violationData.alerts[index].includes('Carrier Spacing') ? React.createElement(XCircle, { size: 12 }) : React.createElement(AlertTriangle, { size: 12 }), 
+                                                " ", 
+                                                violationData.alerts[index].includes('Carrier Spacing') ? 'Carrier Spacing' : violationData.alerts[index][0]
+                                            )
                                         ) : null
                                     ),
-                                    React.createElement("label", { htmlFor: `freq-${index}`, className: `block text-sm font-medium mb-1 ${violationData.alerts[index].length > 0 ? 'text-red-400' : (isAllCompatible && freq.trim() !== '' ? 'text-green-500' : (isNonStandard ? 'text-yellow-400' : 'text-zinc-400'))}` }, "Freq ", index + 1),
+                                    React.createElement("label", { htmlFor: `freq-${index}`, className: `block text-sm font-medium mb-1 ${violationData.alerts[index].length > 0 ? 'text-red-400' : (isAllCompatible && freq.trim() !== '' ? 'text-green-500' : (isNonStandard ? 'text-[#ffff00]' : 'text-zinc-400'))}` }, "Freq ", index + 1),
                                     React.createElement("input", { id: `freq-${index}`, type: "text", value: freq, onChange: (e) => handleFrequencyChange(index, e.target.value), placeholder: "e.g., 512.250", className: `w-full bg-zinc-700 border rounded-md px-3 py-2 placeholder-zinc-500 focus:ring-2 focus:outline-none transition ${violationData.alerts[index].length > 0 || isNonStandard ? 'border-red-500 focus:ring-red-500 text-red-400' : 'border-zinc-600 focus:ring-cyan-500 text-white'}` })
                                 ))
                             })),
@@ -349,7 +353,7 @@ function IMDCalculatorPage({
                             ),
                             React.createElement("div", { className: "h-full self-stretch border-l border-zinc-700" }),
                             React.createElement("div", { className: `text-center px-1 ${!is5TSpacingEnabled ? 'opacity-40' : ''}` },
-                                 React.createElement("div", { className: "flex items-center justify-center gap-2 h-6", title: "5th-Order Products" }, React.createElement("div", { className: "w-2.5 h-2.5 rounded-full bg-yellow-400" }), React.createElement("span", { className: "font-bold text-lg text-white" }, counts.fifthOrder), React.createElement("span", { className: "text-zinc-400" }, "2T5O")),
+                                 React.createElement("div", { className: "flex items-center justify-center gap-2 h-6", title: "5th-Order Products" }, React.createElement("div", { className: "w-2.5 h-2.5 rounded-full bg-[#ffff00]" }), React.createElement("span", { className: "font-bold text-lg text-white" }, counts.fifthOrder), React.createElement("span", { className: "text-zinc-400" }, "2T5O")),
                                  React.createElement("div", { className: "text-xs text-zinc-500 font-mono mt-0.5 whitespace-nowrap" }, React.createElement("p", null, "3f₁-2f₂"), React.createElement("p", null, "3f₂-2f₁"))
                             ),
                             React.createElement("div", { className: "h-full self-stretch border-l border-zinc-700" }),
@@ -367,7 +371,7 @@ function IMDCalculatorPage({
                         hasCarrierSpacingViolation ? (
                             React.createElement("div", { className: "mb-4 text-center py-4 border-2 border-dashed border-red-700 rounded-lg bg-red-900/30 text-red-300" },
                                  React.createElement(XCircle, { className: "mx-auto h-8 w-8" }),
-                                React.createElement("p", { className: "mt-2 font-semibold" }, "Carrier spacing violations")
+                                React.createElement("p", { className: "mt-2 font-semibold" }, "Carrier spacing violations!")
                             )
                         ) : (
                             React.createElement("div", { className: "mb-4 text-center py-4 border-2 border-dashed border-green-700 rounded-lg bg-green-900/30 text-green-300" },
@@ -397,7 +401,7 @@ function IMDCalculatorPage({
                                                     React.createElement("p", { className: "text-2xl font-bold font-mono text-white" }, p.value.toFixed(3))
                                                 )
                                             ),
-                                            React.createElement("p", { className: "text-sm font-semibold text-zinc-300" }, p.order, "rd Order ", React.createElement("span", { className: "text-zinc-400" }, "(", p.type, ")")),
+                                            React.createElement("p", { className: "text-sm font-semibold text-zinc-300" }, p.order, p.order === 3 ? "rd" : "th", " Order ", React.createElement("span", { className: "text-zinc-400" }, "(", p.type.replace('-', ''), ")")),
                                             React.createElement("p", { className: "text-xs font-mono text-cyan-400/70 mt-1 truncate", title: p.formula }, p.formula)
                                         )
                                     ))
@@ -433,6 +437,7 @@ function IMDGeneratorPage({
     const [error, setError] = useState('');
     const [expandedIndex, setExpandedIndex] = useState(null);
     const [generationRulesSnapshot, setGenerationRulesSnapshot] = useState(null);
+    const [copiedIndex, setCopiedIndex] = useState(null);
 
     const isNumFreqsInvalid = useMemo(() => {
         const num = parseInt(numFrequencies, 10);
@@ -484,7 +489,7 @@ function IMDGeneratorPage({
         if (isNaN(numFreqs) || numFreqs < 1 || numFreqs > 8 || isNaN(lower) || isNaN(upper) || (isCarrierSpacingEnabled && isNaN(cSpacing)) || (is2T3OSpacingEnabled && isNaN(s2t3o)) || (is3T3OSpacingEnabled && isNaN(s3t3o)) || (is5TSpacingEnabled && isNaN(s5t)) || lower >= upper) {
             setError('Please enter valid numeric values for all enabled fields.'); return;
         }
-        setError(''); setIsGenerating(true); setGeneratedLists([]); setExpandedIndex(null);
+        setError(''); setIsGenerating(true); setGeneratedLists([]); setExpandedIndex(null); setCopiedIndex(null);
         setGenerationRulesSnapshot({ isCarrierSpacingEnabled, carrierSpacing, is2T3OSpacingEnabled, spacing2T3O, is3T3OSpacingEnabled, spacing3T3O, is5TSpacingEnabled, spacing5T });
         setTimeout(() => {
             const results = [];
@@ -594,13 +599,30 @@ function IMDGeneratorPage({
                     generatedLists.map((item, index) => (
                         React.createElement("div", { key: index, className: "bg-zinc-800 rounded-lg shadow-md transition-all duration-300" },
                             React.createElement("div", { className: "p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer", onClick: () => handleToggleExpand(index) },
-                                React.createElement("div", { className: "flex-grow" }, 
-                                    React.createElement("div", { className: "flex items-center gap-3 mb-2" }, 
-                                        invalidListIndices.has(index) && React.createElement(AlertTriangle, { size: 16, className: "text-red-500 animate-pulse", title: "Invalidated by current rules" }),
-                                        React.createElement("p", { className: `text-sm font-bold ${invalidListIndices.has(index) ? 'text-red-500 animate-pulse' : 'text-green-500'}` }, "List #", index + 1), 
-                                        React.createElement(ChevronDown, { size: 16, className: `text-zinc-400 transition-transform duration-200 ${expandedIndex === index ? 'rotate-180' : ''}` })
+                                React.createElement("div", { className: "flex-grow w-full" }, 
+                                    React.createElement("div", { className: "flex flex-col items-start gap-2 mb-2 sm:pr-4 w-full" }, 
+                                        React.createElement("button", {
+                                            onClick: (e) => {
+                                                e.stopPropagation();
+                                                const textToCopy = item.list.map(f => f.toFixed(3)).join(',');
+                                                const textArea = document.createElement("textarea");
+                                                textArea.value = textToCopy;
+                                                document.body.appendChild(textArea);
+                                                textArea.select();
+                                                try { document.execCommand('copy'); } catch (err) {}
+                                                document.body.removeChild(textArea);
+                                                
+                                                setCopiedIndex(index);
+                                            },
+                                            className: "text-xs bg-zinc-700 hover:bg-cyan-600 text-white font-medium py-1 px-2.5 rounded-md transition-colors duration-200 -ml-[2px]"
+                                        }, copiedIndex === index ? "Copied!" : "Copy to clipboard"),
+                                        React.createElement("div", { className: "flex items-center gap-3" },
+                                            invalidListIndices.has(index) && React.createElement(AlertTriangle, { size: 16, className: "text-red-500 animate-pulse", title: "Invalidated by current rules" }),
+                                            React.createElement("p", { className: `text-sm font-bold ${invalidListIndices.has(index) ? 'text-red-500 animate-pulse' : 'text-green-500'}` }, "List #", index + 1), 
+                                            React.createElement(ChevronDown, { size: 16, className: `text-zinc-400 transition-transform duration-200 ${expandedIndex === index ? 'rotate-180' : ''}` })
+                                        )
                                     ), 
-                                    React.createElement("div", { className: `grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-4 gap-y-1 font-mono text-sm` }, item.list.map(freq => React.createElement("span", { key: freq, className: !isMultipleOf25(freq) ? 'text-yellow-400' : 'text-white' }, freq.toFixed(3))))
+                                    React.createElement("div", { className: `grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-4 gap-y-1 font-mono text-sm` }, item.list.map(freq => React.createElement("span", { key: freq, className: !isMultipleOf25(freq) ? 'text-[#ffff00]' : 'text-white' }, freq.toFixed(3))))
                                 ),
                                 React.createElement("div", { className: "bg-zinc-900 px-4 py-3 rounded-md text-center flex-shrink-0 w-44" },
                                     React.createElement("span", { className: "text-2xl font-bold text-white" }, item.counts.total),
@@ -609,7 +631,7 @@ function IMDGeneratorPage({
                                     React.createElement("div", { className: "flex justify-between items-center text-xs" },
                                         React.createElement("div", { className: `transition-opacity ${!is2T3OSpacingEnabled ? 'opacity-40' : 'text-red-500'}`, title: "2-Transmitter 3rd Order" }, React.createElement("span", { className: "font-bold text-base" }, item.counts.twoToneThirdOrder), React.createElement("p", { className: "-mt-1 text-zinc-500" }, "2T3O")),
                                         React.createElement("div", { className: `transition-opacity ${!is3T3OSpacingEnabled ? 'opacity-40' : 'text-orange-400'}`, title: "3-Transmitter 3rd Order" }, React.createElement("span", { className: "font-bold text-base" }, item.counts.threeToneThirdOrder), React.createElement("p", { className: "-mt-1 text-zinc-500" }, "3T3O")),
-                                        React.createElement("div", { className: `transition-opacity ${!is5TSpacingEnabled ? 'opacity-40' : 'text-yellow-400/90'}`, title: "5th Order" }, React.createElement("span", { className: "font-bold text-base" }, item.counts.fifthOrder), React.createElement("p", { className: "-mt-1 text-zinc-500" }, "2T5O"))
+                                        React.createElement("div", { className: `transition-opacity ${!is5TSpacingEnabled ? 'opacity-40' : 'text-[#ffff00]'}`, title: "5th Order" }, React.createElement("span", { className: "font-bold text-base" }, item.counts.fifthOrder), React.createElement("p", { className: "-mt-1 text-zinc-500" }, "2T5O"))
                                     )
                                 )
                             ),
@@ -652,7 +674,7 @@ const SpectrumGraph = ({ carriers, imdProducts, displayRules }) => {
     const rangeStart = minFreq - padding, rangeEnd = maxFreq + padding;
     const totalRange = rangeEnd - rangeStart;
     const freqToX = (freq) => ((freq - rangeStart) / totalRange) * 100;
-    const getIMDColor = (p) => p.order === 3 ? (p.type === '2-TX' ? '#FF1111' : '#FF9900') : p.order === 5 ? '#EAB308' : '#6B7280';
+    const getIMDColor = (p) => p.order === 3 ? (p.type === '2-TX' ? '#dc2626' : '#fb923c') : p.order === 5 ? '#ffff00' : '#6B7280';
     const getIMDHeight = (p) => p.order === 3 ? (p.type === '2-TX' ? '50' : '70') : p.order === 5 ? '90' : '100';
 
     return (
@@ -663,8 +685,9 @@ const SpectrumGraph = ({ carriers, imdProducts, displayRules }) => {
                 React.createElement("text", { x: "0", y: "140", fill: "#9CA3AF", className: "text-xs font-mono" }, rangeStart.toFixed(2)),
                 React.createElement("text", { x: "50%", y: "140", fill: "#9CA3AF", textAnchor: "middle", className: "text-xs font-mono" }, "Frequency (MHz)"),
                 React.createElement("text", { x: "100%", y: "140", fill: "#9CA3AF", textAnchor: "end", className: "text-xs font-mono" }, rangeEnd.toFixed(2)),
-                filteredImdProducts.map((p, i) => React.createElement("line", { key: `imd-${i}`, x1: `${freqToX(p.value)}%`, y1: "120", x2: `${freqToX(p.value)}%`, y2: getIMDHeight(p), stroke: getIMDColor(p), strokeWidth: "4", onMouseOver: (e) => handleMouseOver(e, `IMD Order ${p.order} (${p.type.replace('-', ' ')}): ${p.value.toFixed(3)}`), onMouseOut: handleMouseOut })),
-                carriers.map((freq, i) => React.createElement("line", { key: `carrier-${i}`, x1: `${freqToX(freq)}%`, y1: "120", x2: `${freqToX(freq)}%`, y2: "20", stroke: "#22C55E", strokeWidth: "4", onMouseOver: (e) => handleMouseOver(e, `Carrier: ${freq.toFixed(3)}`), onMouseOut: handleMouseOut }))
+                carriers.map((freq, i) => React.createElement("line", { key: `carrier-${i}`, x1: `${freqToX(freq)}%`, y1: "120", x2: `${freqToX(freq)}%`, y2: "20", stroke: "#22C55E", strokeWidth: "4", onMouseOver: (e) => handleMouseOver(e, `Carrier: ${freq.toFixed(3)}`), onMouseOut: handleMouseOut })),
+                filteredImdProducts.filter(p => p.order === 3).map((p, i) => React.createElement("line", { key: `imd3-${i}`, x1: `${freqToX(p.value)}%`, y1: "120", x2: `${freqToX(p.value)}%`, y2: getIMDHeight(p), stroke: getIMDColor(p), strokeWidth: "4", onMouseOver: (e) => handleMouseOver(e, `IMD Order ${p.order} (${p.type.replace('-', ' ')}): ${p.value.toFixed(3)}`), onMouseOut: handleMouseOut })),
+                filteredImdProducts.filter(p => p.order === 5).map((p, i) => React.createElement("line", { key: `imd5-${i}`, x1: `${freqToX(p.value)}%`, y1: "120", x2: `${freqToX(p.value)}%`, y2: getIMDHeight(p), stroke: getIMDColor(p), strokeWidth: "4", onMouseOver: (e) => handleMouseOver(e, `IMD Order ${p.order} (${p.type.replace('-', ' ')}): ${p.value.toFixed(3)}`), onMouseOut: handleMouseOut }))
             )
         )
     );
